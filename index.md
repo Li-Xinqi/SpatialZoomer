@@ -67,8 +67,8 @@ To get started with SpatialZoomer, check out our:
 References
 
 
-<script>
+<!-- <script>
 // 注入 Jekyll baseurl
 window.jekyllBaseurl = "{{ site.baseurl }}";
-</script>
+</script> -->
 <script src="{{ '/assets/js/demo.js' | relative_url }}"></script>
