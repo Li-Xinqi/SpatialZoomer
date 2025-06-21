@@ -3,7 +3,6 @@ title: SpatialZoomer
 layout: home
 nav_order: 1
 description: "SpatialZoomer uses spectral graph filter banks and dynamic programming to extract multi-scale features from spatial transcriptomics data."
-permalink: /
 ---
 
 
