@@ -1,3 +1,3 @@
 # SpatialZoomer Demo
 
-We will create a demo website here.
+We will create a SpatialZoomer demo website here.
