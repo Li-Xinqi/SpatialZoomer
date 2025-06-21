@@ -1,7 +1,4 @@
----
----
-// const baseurl = window.jekyllBaseurl || '';
-var baseurl = "{{ site.baseurl }}";
+const baseurl = "/SpatialZoomer";
 const buttons = document.querySelectorAll('.dataset-buttons button');
 const desc = document.getElementById('dataset-description');
 const img1 = document.getElementById('img1');
