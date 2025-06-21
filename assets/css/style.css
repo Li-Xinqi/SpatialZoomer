@@ -1,0 +1,9 @@
+body { font-family: sans-serif; margin: 0; padding: 0; }
+.site-header { background: #a3cdfd; padding: 1rem; display: flex; align-items: center; }
+.logo { height: 3rem; margin-right: 1rem; }
+.site-container { display: flex; }
+.sidebar-nav { width: 200px; background: #f5f5f5; padding: 1rem; position: fixed; height: 100vh; overflow-y: auto; }
+.sidebar-nav ul { list-style: none; padding: 0; }
+.sidebar-nav li { margin-bottom: 0.5rem; }
+.sidebar-nav a { text-decoration: none; color: #333; }
+.content { margin-left: 220px; padding: 2rem; }
