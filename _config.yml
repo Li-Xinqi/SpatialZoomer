@@ -22,7 +22,7 @@ title: SpatialZoomer
 email: lxq19@mails.tsinghua.edu.cn
 description: >- # this means to ignore newlines until "baseurl:"
   SpatialZoomer: multi-scale feature analysis of spatial transcriptomics
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "/SpatialZoomer" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 github_username:  Li-Xinqi
