@@ -1,4 +1,4 @@
-const baseurl = window.SITE_BASEURL || '';
+const baseurl = window.jekyllBaseurl || '';
 const buttons = document.querySelectorAll('.dataset-buttons button');
 const desc = document.getElementById('dataset-description');
 const img1 = document.getElementById('img1');
