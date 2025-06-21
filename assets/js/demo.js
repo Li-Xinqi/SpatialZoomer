@@ -1,3 +1,4 @@
+const baseurl = window.SITE_BASEURL || '';
 const buttons = document.querySelectorAll('.dataset-buttons button');
 const desc = document.getElementById('dataset-description');
 const img1 = document.getElementById('img1');
@@ -42,8 +43,8 @@ resolutionSelect.addEventListener('change', updateImages);
 function updateDemo() {
   if (!currentDataset) return;
   desc.textContent = `Dataset ${currentDataset} description.`;
-  img1.src = `/assets/images/demo${currentDataset}_1.png`;
-  img2.src = `/assets/images/demo${currentDataset}_2.png`;
+  img1.src = `${baseurl}/assets/images/demo${currentDataset}_1.png`;
+  img2.src = `${baseurl}/assets/images/demo${currentDataset}_2.png`;
   scaleRange.value = 0;
   scaleValue.textContent = scaleOptions[scaleRange.value];
   // 动态填充 resolution 下拉选项
@@ -62,5 +63,5 @@ function updateImages() {
   if (!currentDataset) return;
   const scale = scaleValue.textContent;
   const res = resolutionSelect.value;
-  img3.src = `/assets/images/data/demo${currentDataset}_scale${scale}_reso${res}.png`;
+  img3.src = `${baseurl}/assets/images/data/demo${currentDataset}_scale${scale}_reso${res}.png`;
 }
