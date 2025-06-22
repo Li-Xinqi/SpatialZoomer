@@ -6,50 +6,88 @@ const img2 = document.getElementById('img2');
 const img3 = document.getElementById('img3');
 const scaleRange = document.getElementById('scaleRange');
 const scaleValue = document.getElementById('scaleValue');
-const scaleOptions = [0.1, 0.2, 0.5, 1, 2, 5, 10];
 const resolutionSelect = document.getElementById('resolutionSelect');
-const resolutionOptions = ['1', '2', '3'];
+
+// 二维参数数组，按 dataset 索引存储对应的 scale 和 resolution 列表
+const datasetDescriptionList = [
+  "Dataset 1 description.",       // Dataset1
+  "Dataset 2 description.",         // Dataset2
+  "Dataset 3 description.",       // Dataset3
+  "Dataset 4 description."              // Dataset4
+];
+
+// 二维参数数组，按 dataset 索引存储对应的 scale 和 resolution 列表
+const scaleOptionsList = [
+  [0.1, 0.2, 0.5, 1, 2, 5, 10],       // Dataset1 scales
+  [0.2, 0.5, 1, 2],         // Dataset2 scales
+  [0.5, 1, 2, 5, 10],       // Dataset3 scales
+  [1, 2, 4, 8]              // Dataset4 scales
+];
+
+const resolutionOptionsList = [
+  ['1', '2', '3'],          // Dataset1 resolutions
+  ['a', 'b'],               // Dataset2 resolutions
+  ['x', 'y', 'z', 'w'],     // Dataset3 resolutions
+  ['low', 'high']           // Dataset4 resolutions
+];
+
+const resolutionOptionsValue = [
+  ['1', '2', '3'],    // Dataset1 actual values
+  ['10', '20'],             // Dataset2
+  ['100', '200', '300', '400'], // Dataset3
+  ['1.0', '2.0']            // Dataset4
+];
+
 let currentDataset = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  currentDataset = 1; // 默认选择第一个数据集
+  currentDataset = parseInt(buttons[0].dataset.dataset); // 默认选择第一个数据集
   updateDemo();
 });
 
 buttons.forEach(btn => btn.addEventListener('click', () => {
-  currentDataset = btn.dataset.dataset;
+  currentDataset = parseInt(btn.dataset.dataset);
   updateDemo();
 }));
 
 scaleRange.addEventListener('input', () => {
   const idx = parseInt(scaleRange.value, 10);
-  scaleValue.textContent = scaleOptions[idx];
+  scaleValue.textContent = scaleOptionsList[currentDataset-1][idx];
   updateImages();
 });
 
-// 页面加载时动态填充 resolution 选项，并清空旧选项以防重复
-function populateResolutionOptions() {
+resolutionSelect.addEventListener('change', updateImages);
+
+// 填充 resolution 下拉选项，清空旧选项以防重复
+function populateResolutionOptions(texts, values) {
   resolutionSelect.innerHTML = '';
-  resolutionOptions.forEach(res => {
+  texts.forEach((text, idx) => {
     const opt = document.createElement('option');
-    opt.value = res;
-    opt.textContent = res;
+    opt.value = values[idx];
+    opt.textContent = text;
     resolutionSelect.appendChild(opt);
   });
+  resolutionSelect.value = texts[0]; // 默认选择第一个选项
 }
 
-resolutionSelect.addEventListener('change', updateImages);
+// 初始化 scaleRange
+function initializeScales(scales) {
+  scaleRange.min = 0;
+  scaleRange.max = scales.length - 1;
+  scaleRange.step = 1;
+  scaleRange.value = 0;
+  scaleValue.textContent = scales[0];
+}
 
 function updateDemo() {
   if (!currentDataset) return;
-  desc.textContent = `Dataset ${currentDataset} description.`;
+  desc.textContent = datasetDescriptionList[currentDataset-1];
   img1.src = `${baseurl}/assets/images/demo${currentDataset}_1.png`;
   img2.src = `${baseurl}/assets/images/demo${currentDataset}_2.png`;
-  scaleRange.value = 0;
-  scaleValue.textContent = scaleOptions[scaleRange.value];
+  // 初始化 scaleRange
+  initializeScales(scaleOptionsList[currentDataset-1]);
   // 动态填充 resolution 下拉选项
-  populateResolutionOptions()
-  resolutionSelect.value = 1;
+  populateResolutionOptions(resolutionOptionsList[currentDataset-1], resolutionOptionsValue[currentDataset-1]);
   updateImages();
 }
 

@@ -8,14 +8,8 @@ description: "SpatialZoomer uses spectral graph filter banks and dynamic program
 
 # Overview
 {: .fs-6 .fw-700 }
-<div class="overview-container">
-    <div class="overview-image">
-    <img src="{{ '/assets/images/overview.png' | relative_url }}" alt="Overview">
-    </div>
-    <div class="overview-text">
-    <p>SpatialZoomer uses spectral graph filter banks and dynamic programming to extract multi-scale features from spatial transcriptomics data.</p>
-    </div>
-</div>
+![Overview]({{ '/assets/images/overview.png' | relative_url }})
+SpatialZoomer uses spectral graph filter banks and dynamic programming to extract multi-scale features from spatial transcriptomics data.
 
 # Demo
 {: .fs-6 .fw-700 }
@@ -37,9 +31,10 @@ Select a dataset to visualize the results of SpatialZoomer.
         <div class="params">
             <div class="param-group">
                 <label for="scaleRange">Scale:</label>
-                <input type="range" id="scaleRange" min="0" max="6" step="1" value="0">
+                <input type="range" id="scaleRange" value="0">
                 <span id="scaleValue"></span>
             </div>
+            <p>asdadadadasdasdadas</p>
             <div class="param-group">
                 <label for="resolutionSelect">Resolution:</label>
                 <select id="resolutionSelect"></select>
