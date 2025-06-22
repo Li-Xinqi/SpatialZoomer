@@ -1,4 +1,4 @@
-const baseurl = "/SpatialZoomer";
+const baseurl = window.jekyll_baseurl || "";
 const buttons = document.querySelectorAll('.dataset-buttons button');
 const desc = document.getElementById('dataset-description');
 const img1 = document.getElementById('img1');
@@ -12,7 +12,7 @@ const resolutionOptions = ['1', '2', '3'];
 let currentDataset = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  currentDataset = buttons[0].dataset.dataset; // 默认选择第一个数据集
+  currentDataset = 1; // 默认选择第一个数据集
   updateDemo();
 });
 

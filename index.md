@@ -66,5 +66,4 @@ To get started with SpatialZoomer, check out our:
 {: .fs-6 .fw-700 }
 References
 
-
 <script src="{{ '/assets/js/demo.js' | relative_url }}"></script>

@@ -46,3 +46,5 @@ gem "jekyll-sitemap", group: :jekyll_plugins
 gem "jekyll-remote-theme", group: :jekyll_plugins
 
 gem "html-proofer", "~> 5.0", :group => :development
+
+gem "jekyll-seo-tag", "~> 2.7", group: :jekyll_plugins
