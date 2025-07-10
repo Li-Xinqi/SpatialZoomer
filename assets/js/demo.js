@@ -10,32 +10,32 @@ const resolutionSelect = document.getElementById('resolutionSelect');
 
 // 二维参数数组，按 dataset 索引存储对应的 scale 和 resolution 列表
 const datasetDescriptionList = [
-  "Dataset 1 description.",       // Dataset1
-  "Dataset 2 description.",         // Dataset2
-  "Dataset 3 description.",       // Dataset3
-  "Dataset 4 description."              // Dataset4
+  '<strong>Dataset 1:</strong> Xenium In Situ, Alzheimer\'s Disease Mouse Model<br><strong>Description:</strong> This dataset comprises six FFPE tissue sections, organized into two columns representing wild-type (WT) and CRND8 APP-overexpressing (TgCRND8) transgenic male mouse brains. The three rows correspond to time points of 2.5, 5.7, and 13.2 months of age for WT mice, and 2.5, 5.7, and 17.9 months for TgCRND8 mice. In the transgenic group, these time points reflect progressive stages of Alzheimer’s disease pathology, specifically mild, moderate, and advanced amyloid-β (Aβ) deposition.<strong>Cells:</strong> 349,063 &nbsp;&nbsp; <strong>Genes:</strong> Xenium Mouse Brain Gene Expression Panel plus 99 Custom Genes (347 genes)<br><strong>Original Data Download:</strong> <a href="https://www.10xgenomics.com/datasets/xenium-in-situ-analysis-of-alzheimers-disease-mouse-model-brain-coronal-sections-from-one-hemisphere-over-a-time-course-1-standard" target="_blank">Link</a>',
+  "Vizgen MERFISH, :.",         // Dataset2
+  "Xenium Prime.",       // Dataset3
+  "Xenium Prime, ."              // Dataset4
 ];
 
 // 二维参数数组，按 dataset 索引存储对应的 scale 和 resolution 列表
 const scaleOptionsList = [
-  [0.1, 0.2, 0.5, 1, 2, 5, 10],       // Dataset1 scales
-  [0.2, 0.5, 1, 2],         // Dataset2 scales
-  [0.5, 1, 2, 5, 10],       // Dataset3 scales
-  [1, 2, 4, 8]              // Dataset4 scales
+  [0.0, 1.1, 3.0, 4.5, 6.0, 8.0, 10.5, 14.0, 25.0, 40.0],       // Dataset1 scales
+  [0.0, 1, 3, 4, 5.5, 7.5, 9.5, 13.5, 25.0, 40.0],         // Dataset2 scales
+  [0.0, 0.6, 1.2, 1.6, 3.0, 4.0, 5.0, 6.5, 8.5, 13.0, 25.0, 40.0],       // Dataset3 scales
+  [0.0, 1.0, 2.5, 3.5, 4.5, 6.0, 8.0, 13.0, 25.0, 40.0]              // Dataset4 scales
 ];
 
 const resolutionOptionsList = [
-  ['1', '2', '3'],          // Dataset1 resolutions
-  ['a', 'b'],               // Dataset2 resolutions
-  ['x', 'y', 'z', 'w'],     // Dataset3 resolutions
-  ['low', 'high']           // Dataset4 resolutions
+  ['1', '1.5', '2'],          // Dataset1 resolutions
+  ['1', '0.8', '1.2'],               // Dataset2 resolutions
+  ['0.8', '1', '0.1'],     // Dataset3 resolutions
+  ['0.8', '1', '0.6']           // Dataset4 resolutions
 ];
 
 const resolutionOptionsValue = [
-  ['1', '2', '3'],    // Dataset1 actual values
-  ['10', '20'],             // Dataset2
-  ['100', '200', '300', '400'], // Dataset3
-  ['1.0', '2.0']            // Dataset4
+  ['1', '1.5', '2'],          // Dataset1 resolutions
+  ['1', '0.8', '1.2'],               // Dataset2 resolutions
+  ['0.8', '1', '0.1'],     // Dataset3 resolutions
+  ['0.8', '1', '0.6']           // Dataset4 resolutions
 ];
 
 let currentDataset = null;
@@ -101,5 +101,5 @@ function updateImages() {
   if (!currentDataset) return;
   const scale = scaleValue.textContent;
   const res = resolutionSelect.value;
-  img3.src = `${baseurl}/assets/images/data/demo${currentDataset}_scale${scale}_reso${res}.png`;
+  img3.src = `${baseurl}/assets/images/data/demo${currentDataset}_scale${scale}_reso${res}.jpg`;
 }
