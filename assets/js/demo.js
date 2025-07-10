@@ -81,7 +81,7 @@ function initializeScales(scales) {
 
 function updateDemo() {
   if (!currentDataset) return;
-  desc.textContent = datasetDescriptionList[currentDataset-1];
+  desc.innerHTML = datasetDescriptionList[currentDataset-1];
   img1.src = `${baseurl}/assets/images/demo${currentDataset}_1.png`;
   img2.src = `${baseurl}/assets/images/demo${currentDataset}_2.png`;
   // 初始化 scaleRange
@@ -101,5 +101,5 @@ function updateImages() {
   if (!currentDataset) return;
   const scale = scaleValue.textContent;
   const res = resolutionSelect.value;
-  img3.src = `${baseurl}/assets/images/data/demo${currentDataset}_scale${scale}_reso${res}.jpg`;
+  img3.src = `${baseurl}/assets/images/data/demo${currentDataset}_scale_${scale}_reso${res}.jpg`;
 }
