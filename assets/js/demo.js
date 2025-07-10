@@ -10,7 +10,7 @@ const resolutionSelect = document.getElementById('resolutionSelect');
 
 // 二维参数数组，按 dataset 索引存储对应的 scale 和 resolution 列表
 const datasetDescriptionList = [
-  '<strong>Dataset 1:</strong> Xenium In Situ, Alzheimer\'s Disease Mouse Model<br><strong>Description:</strong> This dataset comprises six FFPE tissue sections, organized into two columns representing wild-type (WT) and CRND8 APP-overexpressing (TgCRND8) transgenic male mouse brains. The three rows correspond to time points of 2.5, 5.7, and 13.2 months of age for WT mice, and 2.5, 5.7, and 17.9 months for TgCRND8 mice. In the transgenic group, these time points reflect progressive stages of Alzheimer’s disease pathology, specifically mild, moderate, and advanced amyloid-β (Aβ) deposition.<strong>Cells:</strong> 349,063 &nbsp;&nbsp; <strong>Genes:</strong> Xenium Mouse Brain Gene Expression Panel plus 99 Custom Genes (347 genes)<br><strong>Original Data Download:</strong> <a href="https://www.10xgenomics.com/datasets/xenium-in-situ-analysis-of-alzheimers-disease-mouse-model-brain-coronal-sections-from-one-hemisphere-over-a-time-course-1-standard" target="_blank">Link</a>',
+  '<strong>Dataset 1:</strong> Xenium In Situ, Alzheimer\'s Disease Mouse Model<br><strong>Description:</strong> This dataset comprises six FFPE tissue sections, organized into two columns representing wild-type (WT) and CRND8 APP-overexpressing (TgCRND8) transgenic male mouse brains. The three rows correspond to time points of 2.5, 5.7, and 13.2 months of age for WT mice, and 2.5, 5.7, and 17.9 months for TgCRND8 mice. In the transgenic group, these time points reflect progressive stages of Alzheimer’s disease pathology, specifically mild, moderate, and advanced amyloid-β (Aβ) deposition.<br><strong>Cells:</strong> 349,063 &nbsp;&nbsp; <strong>Genes:</strong> Xenium Mouse Brain Gene Expression Panel plus 99 Custom Genes (347 genes)<br><strong>Original Data Download:</strong> <a href="https://www.10xgenomics.com/datasets/xenium-in-situ-analysis-of-alzheimers-disease-mouse-model-brain-coronal-sections-from-one-hemisphere-over-a-time-course-1-standard" target="_blank">Link</a>',
   "Vizgen MERFISH, :.",         // Dataset2
   "Xenium Prime.",       // Dataset3
   "Xenium Prime, ."              // Dataset4
@@ -52,7 +52,7 @@ buttons.forEach(btn => btn.addEventListener('click', () => {
 
 scaleRange.addEventListener('input', () => {
   const idx = parseInt(scaleRange.value, 10);
-  scaleValue.textContent = scaleOptionsList[currentDataset-1][idx];
+  scaleValue.textContent = scaleOptionsList[currentDataset-1][idx].toFixed(1);
   updateImages();
 });
 
@@ -76,7 +76,7 @@ function initializeScales(scales) {
   scaleRange.max = scales.length - 1;
   scaleRange.step = 1;
   scaleRange.value = 0;
-  scaleValue.textContent = scales[0];
+  scaleValue.textContent = scales[0].toFixed(1);
 }
 
 function updateDemo() {
