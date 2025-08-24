@@ -2,14 +2,22 @@
 title: SpatialZoomer
 layout: home
 nav_order: 1
-description: "SpatialZoomer uses spectral graph filter banks and dynamic programming to extract multi-scale features from spatial transcriptomics data."
+description: "SpatialZoomer uses spectral graph filter banks to extract multi-scale features from single-cell resolved spatial transcriptomics as a zoom-capable microscope."
 ---
 
 
 # Overview
 {: .fs-6 .fw-700 }
-![Overview]({{ '/assets/images/overview.png' | relative_url }})
-SpatialZoomer uses spectral graph filter banks and dynamic programming to extract multi-scale features from spatial transcriptomics data.
+
+<p align="center">
+  <img src="{{ '/assets/images/overview.jpg' | relative_url }}" alt="Overview" width="85%">
+</p>
+
+**SpatialZoomer** is a novel computational framework for **multi-scale feature analysis** of single-cell resolved spatial transcriptomics, functioning like a **zoom-capable microscope** that captures spatial structures from cells, niches, to tissue domains. It further **identifies critical scales automatically** by partitioning the cross-scale similarity map via dynamic programming. 
+
+SpatialZoomer supports **diverse downstream applications**, such as identifying biologically meaningful signals, spatially dependent cell subclusters, and uncovering complex tissue architectures.
+
+SpatialZoomer scales to datasets with millions of cells with high computational efficiency and low hardware requirements.
 
 # Demo
 {: .fs-6 .fw-700 }
@@ -28,13 +36,15 @@ Select a dataset to visualize the results of SpatialZoomer.
             <img id="img2" src="" alt="">
         </div>
         <img id="img3" src="" alt="">
+        <p>Note: Across scales, cluster colors are aligned by an algorithm that maximizes the overlap between clusters.</p>
         <div class="params">
+            <p>Please <strong>slide the scale axis</strong> to explore the results at critical scales (higher values result in more smoothed signals, identifying more global spatial structures):</p>
             <div class="param-group">
                 <label for="scaleRange">Scale:</label>
                 <input type="range" id="scaleRange" value="0">
                 <span id="scaleValue"></span>
             </div>
-            <p>asdadadadasdasdadas</p>
+            <p>Please <strong>choose the clustering resolution (a higher value results in more clusters)</strong>:</p>
             <div class="param-group">
                 <label for="resolutionSelect">Resolution:</label>
                 <select id="resolutionSelect"></select>
@@ -46,19 +56,23 @@ Select a dataset to visualize the results of SpatialZoomer.
 # Installation
 {: .fs-6 .fw-700 }
 ```python
-pip install spatialzoomer
+# Create and activate a virtual environment
+conda create -n spatialzoomer python=3.10 -y
+conda activate spatialzoomer
+
+# Install required dependency
+conda install -c conda-forge pyarrow
+
+# Install SpatialZoomer
+pip install SpatialZoomer==1.0.0
 ```
 
 # Tutorial
 {: .fs-6 .fw-700 }
-To get started with SpatialZoomer, check out our:
-
-[tutorial 1](#)
-
-[tutorial 1](#)
+To get started with SpatialZoomer, please refer to our tutorials available in the [GiHub repository](https://github.com/Li-Xinqi/SpatialZoomer.git).
 
 # References
 {: .fs-6 .fw-700 }
-References
+
 
 <script src="{{ '/assets/js/demo.js' | relative_url }}"></script>
