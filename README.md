@@ -7,7 +7,7 @@ The Python implementation of **SpatialZoomer**, a toolkit for **multi-scale spat
 3. [System Requirements](#system-requirements)
 4. [Installation](#installation)
 5. [Tutorials](#tutorials)
-6. [Cite](#citation)
+6. [Cite](#cite)
 
 
 ## Introduction
@@ -118,4 +118,4 @@ All datasets required for the tutorials are available on [Google Cloud](https://
 Each tutorial also provides a direct download link for its corresponding dataset.
 
 ## Cite
-Xinqi Li#, Yuhan Fan#, Yue Han, Wenbo Guo, Jingmin Huang, Nan Yan, Zeyu Chen, Yanhong Wu, Lin Hou, Xuegong Zhang, Zeyu Chen, Jin Gu1*. SpatialZoomer: multi-scale feature analysis of spatial transcriptomics. bioRxiv (2025).
+Xinqi Li#, Yuhan Fan#, Yue Han, Wenbo Guo, Jingmin Huang, Nan Yan, Zeyu Chen, Yanhong Wu, Yuxin Miao, Lin Hou, Xuegong Zhang, Zeyu Chen, Jin Gu1*. SpatialZoomer: multi-scale feature analysis of spatial transcriptomics. bioRxiv (2025).
