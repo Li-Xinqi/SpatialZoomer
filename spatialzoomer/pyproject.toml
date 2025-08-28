@@ -1,0 +1,37 @@
+[project]
+name = "SpatialZoomer"
+version = "0.1.0"
+description = "Multi-scale feature analysis of spatial transcriptomics"
+readme = "README.md"
+authors = [
+    {name = "Xinqi Li", email = "lxq19@mails.tsinghua.edu.cn"},
+    {name = "Yuhan Fan", email = "fyh22@mails.tsinghua.edu.cn"}
+]
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "scanpy",
+    "squidpy",
+    "seaborn",
+    "scipy",
+    "kneed",
+    "pandas", 
+    "scikit-learn", 
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics"
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
