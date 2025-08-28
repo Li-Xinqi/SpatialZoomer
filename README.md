@@ -86,7 +86,7 @@ conda activate spatialzoomer
 conda install -c conda-forge pyarrow
 
 # Install SpatialZoomer
-pip install SpatialZoomer==0.1.0
+pip install SpatialZoomer==0.1.1
 ```
 
 ## Tutorials
@@ -118,4 +118,4 @@ All datasets required for the tutorials are available on [Google Cloud](https://
 Each tutorial also provides a direct download link for its corresponding dataset.
 
 ## Cite
-Xinqi Li#, Yuhan Fan#, Yue Han, Wenbo Guo, Jingmin Huang, Nan Yan, Zeyu Chen, Yanhong Wu, Yuxin Miao, Lin Hou, Xuegong Zhang, Zeyu Chen, Jin Gu1*. SpatialZoomer: multi-scale feature analysis of spatial transcriptomics. bioRxiv (2025).
+Xinqi Li#, Yuhan Fan#, Yue Han, Wenbo Guo, Jingmin Huang, Nan Yan, Zeyu Chen, Yanhong Wu, Yuxin Miao, Lin Hou, Xuegong Zhang, Zeyu Chen, Jin Gu*. SpatialZoomer: multi-scale feature analysis of spatial transcriptomics. bioRxiv (2025).
