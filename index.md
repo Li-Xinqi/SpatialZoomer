@@ -44,7 +44,7 @@ Select a dataset to visualize the results of SpatialZoomer.
                 <input type="range" id="scaleRange" value="0">
                 <span id="scaleValue"></span>
             </div>
-            <p>Please <strong>choose the clustering resolution (a higher value results in more clusters)</strong>:</p>
+            <p>Please <strong>choose the clustering resolution</strong> (a higher value results in more clusters):</p>
             <div class="param-group">
                 <label for="resolutionSelect">Resolution:</label>
                 <select id="resolutionSelect"></select>
@@ -55,7 +55,18 @@ Select a dataset to visualize the results of SpatialZoomer.
 
 # Installation
 {: .fs-6 .fw-700 }
-```python
+
+### Option 1: Recommended (using `environment.yml`)
+Download the `environment.yml` from [Github](https://github.com/Li-Xinqi/SpatialZoomer/blob/main/environment.yml).
+```bash
+# Create a virtual environment from the provided .yml file 
+conda env create -f environment.yml
+conda activate spatialzoomer
+```
+
+
+### Option 2: Manual installation
+```bash
 # Create and activate a virtual environment
 conda create -n spatialzoomer python=3.10 -y
 conda activate spatialzoomer
@@ -64,15 +75,15 @@ conda activate spatialzoomer
 conda install -c conda-forge pyarrow
 
 # Install SpatialZoomer
-pip install SpatialZoomer==1.0.0
+pip install SpatialZoomer==0.1.1
 ```
 
 # Tutorial
 {: .fs-6 .fw-700 }
-To get started with SpatialZoomer, please refer to our tutorials available in the [GiHub repository](https://github.com/Li-Xinqi/SpatialZoomer.git).
+
+To get started with SpatialZoomer, please refer to our tutorials available in the [GitHub repository](https://github.com/Li-Xinqi/SpatialZoomer.git).
 
 # References
 {: .fs-6 .fw-700 }
-
 
 <script src="{{ '/assets/js/demo.js' | relative_url }}"></script>
