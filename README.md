@@ -5,9 +5,10 @@ The Python implementation of **SpatialZoomer**, a toolkit for **multi-scale spat
 1. [Introduction](#introduction)
 2. [Demos](#demos)
 3. [System Requirements](#system-requirements)
-4. [Installation](#installation)
-5. [Tutorials](#tutorials)
-6. [Cite](#cite)
+4. [Cloning Tip](#cloning-tip)
+5. [Installation](#installation)
+6. [Tutorials](#tutorials)
+7. [Cite](#cite)
 
 
 ## Introduction
@@ -65,6 +66,15 @@ SpatialZoomer requires only a standard computer with sufficient RAM for in-memor
   <em>Runtime and memory profiling of SpatialZoomer across nine datasets and four devices</em>
 </p>
 
+## Cloning Tip
+
+To speed up the cloning process by downloading only the `main` branch, you can either:
+
+- Click **Code → Download ZIP**, or  
+- Use the following command:
+```bash
+git clone --single-branch --branch main https://github.com/Li-Xinqi/SpatialZoomer.git
+```
 ## Installation
 Requires **Python ≥ 3.9**
 
