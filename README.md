@@ -84,7 +84,7 @@ Requires **Python ≥ 3.9**
 conda env create -f environment.yml
 conda activate spatialzoomer
 ```
-
+The installation takes approximately 7 minutes. 
 
 ### Option 2: Manual installation
 ```bash
@@ -98,6 +98,7 @@ conda install -c conda-forge pyarrow
 # Install SpatialZoomer
 pip install SpatialZoomer==0.1.1
 ```
+The installation takes approximately 8.5 minutes. 
 
 ## Tutorials
 We provide Jupyter notebook tutorials that guide you through the key functionalities of SpatialZoomer.
