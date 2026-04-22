@@ -7,12 +7,15 @@ from pygsp import graphs, filters
 import numpy as np
 import h5py
 import scanpy.external as sce
+from .NMF_harmony import NMF_harmony_correction
 
 
 def performDR(adata, type = 'NMF', n_components=50, batch_col = None, time_report = True):
     """
-    Perform dimensionality reduction on the input data using either NMF (Non-negative Matrix Factorization) 
-    or PCA (Principal Component Analysis). The reduced data is stored in the adata.obsm, with 'X_nmf' for NMF and 'X_pca' for PCA.
+    Perform dimensionality reduction on the input data using either NMF (Non-negative Matrix Factorization),
+    PCA (Principal Component Analysis), or NMF_harmony (Harmony batch-corrected NMF).
+    The reduced data is stored in the adata.obsm, with 'X_nmf' for NMF, 'X_pca' for PCA,
+    and 'X_nmf_harmony' for NMF_harmony.
 
     Parameters：
     ----------
@@ -21,9 +24,13 @@ def performDR(adata, type = 'NMF', n_components=50, batch_col = None, time_repor
         Rows correspond to cells and columns to genes.
     type: str
         The type of dimensionality reduction to perform. 
-        Options: 'NMF' or 'PCA'.
+        Options: 'NMF', 'PCA', or 'NMF_harmony'.
+        For 'NMF_harmony', batch_col must be provided.
     n_components: int
         The number of components to keep.
+    batch_col: str or list of str, optional
+        Column name(s) in adata.obs used for Harmony batch correction.
+        Required when type='NMF_harmony' or type='PCA' with batch integration.
     time_report: bool
         Whether to report the time taken to perform the dimensionality reduction.
     
@@ -35,11 +42,16 @@ def performDR(adata, type = 'NMF', n_components=50, batch_col = None, time_repor
         - adata.obsm['X_nmf']: Transformed matrix (W) representing the NMF scores for each cell.
         - adata.varm['nmf_loadings']: Loadings matrix (H.T) representing the NMF components for each feature.
         For PCA, the principal components will be added to adata as adata.obsm['X_pca'].
+        For NMF_harmony, the batch-corrected NMF scores will be added:
+        - adata.obsm['X_nmf_harmony']: Harmony-corrected NMF scores.
+        - adata.varm['nmf_loadings_harmony']: Corresponding NMF loadings.
 
     Notes:
     ------
     - For NMF, the sklearn implementation of NMF is used, with initialization set to 'nndsvd' for improved convergence.
     - For PCA, the built-in scanpy function is used (sc.pp.pca).
+    - For NMF_harmony, Harmony batch correction is applied to adata.X before NMF. adata.X must contain
+      raw counts. The corrected data is normalized and log1p-transformed before NMF is performed.
     
     Example Usage:
     --------------
@@ -48,6 +60,9 @@ def performDR(adata, type = 'NMF', n_components=50, batch_col = None, time_repor
 
     # Perform PCA on the data with 50 components and report the time
     adata = performDR(adata, type='PCA', n_components=50, time_report=True)
+
+    # Perform Harmony-corrected NMF (requires raw counts in adata.X)
+    adata = performDR(adata, type='NMF_harmony', n_components=50, batch_col='batch')
     """
     start_time = time.time()
     if type == 'NMF':
@@ -71,11 +86,39 @@ def performDR(adata, type = 'NMF', n_components=50, batch_col = None, time_repor
         elapsed_time = end_time - start_time
         if time_report:
             print(f"Time taken to perform PCA: {elapsed_time:.4f} seconds")
+    if type == 'NMF_harmony':
+        if batch_col is None:
+            raise ValueError("batch_col must be provided when type='NMF_harmony'.")
+        # Apply Harmony batch correction to raw counts, returns normalized (non-log) space
+        adata.X = adata.layers["counts"].copy()  # Ensure adata.X contains raw counts for NMF_harmony
+        adata_corr = NMF_harmony_correction(adata, harmony_vars=batch_col)
+        # Normalize and log1p before NMF
+        sc.pp.normalize_total(adata_corr)
+        sc.pp.log1p(adata_corr)
+        model = NMF(n_components=n_components, init='nndsvd', random_state=0, l1_ratio=0.5)
+        W = model.fit_transform(adata_corr.X)
+        H = model.components_
+        adata.obsm['X_nmf_harmony'] = W
+        adata.varm['nmf_loadings_harmony'] = H.T
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        if time_report:
+            print(f"Time taken to perform NMF_harmony: {elapsed_time:.4f} seconds")
     return adata 
 
 
-
-def getKNN(adata, use_rep = 'spatial', name = 'spatial_knn', n_neighbors = 15, factor = 100, metric = 'euclidean', max_similarity = None, pattern = None, results_report = True, time_report= True):
+def getKNN(adata, 
+           use_rep = 'spatial', 
+           name = 'spatial_knn', 
+           n_neighbors = 15, 
+           factor = 100, 
+           metric = 'euclidean', 
+           max_similarity = None, 
+           weighting='reciprocal',
+           sigma = None, 
+           pattern = 'auto', 
+           results_report = True, 
+           time_report= True):
     """
     Construct a KNN graph based on the input data and store the results in the adata.obsp.  
     The similarities between cells are calculated based on their distances, and the KNN graph is symmetrized.
@@ -101,6 +144,17 @@ def getKNN(adata, use_rep = 'spatial', name = 'spatial_knn', n_neighbors = 15, f
     metric : str, optional, default: 'euclidean'
         The distance metric to use for finding nearest neighbors. Can be 'euclidean', 'manhattan', 'cosine', etc.
     
+    weighting : str, optional, default: 'reciprocal'
+        The edge weighting scheme to use. Options:
+        - 'reciprocal': w = factor / (d + eps) [default]
+        - 'gaussian': w = exp(-d² / (2σ²))
+        - 'uniform': w = 1 (all edges have equal weight)
+        - 'ranked': w normalized by rank position
+        - 'connectivity': w = 1 - d/d_max
+
+    sigma : float, optional, default: None
+        Bandwidth parameter for Gaussian kernel. If None, set to median distance.
+
     results_report : bool, optional, default: True
         If True, prints out a summary of the computed similarities (maximum, minimum, and median values).
     
@@ -132,20 +186,60 @@ def getKNN(adata, use_rep = 'spatial', name = 'spatial_knn', n_neighbors = 15, f
     distances = distances[:, 1:]
     indices = indices[:, 1:]
 
+    if weighting == 'reciprocal':
+        if pattern == 'auto':
+            factor = 5.0 * np.median(distances)
+            if max_similarity is None and name == 'spatial_knn':
+                max_similarity = 100.0
+
+        similarities  = factor / (distances + 1e-10)
         
-    if pattern == 'auto':
-        factor = 5 * np.median(distances)
-        if max_similarity is None and name == 'spatial_knn':
-            max_similarity = 100.0
+        if max_similarity is None:
+            max_similarity = np.max(similarities[similarities < 1e10])  
 
-    similarities  = factor / (distances + 1e-10)
+        similarities = np.clip(similarities, None, max_similarity)
     
-    if max_similarity is None:
-        max_similarity = np.max(similarities[similarities < 1e10])  
+    elif weighting == 'gaussian':
+        # BANKSY-style scaled Gaussian: per-cell adaptive bandwidth
+        # w = exp(-(d/median_d)²)
+        if sigma is None:
+            median_r = np.median(distances, axis=1, keepdims=True)  # Shape: (n_cells, 1)
+            similarities = np.exp(-(distances / median_r) ** 2)
+        else:
+            # Global sigma
+            similarities = np.exp(-(distances / sigma) ** 2)
+        
+        if pattern == 'auto':
+            similarities = similarities * (5.0 / np.median(similarities))
+            
+    elif weighting == 'uniform':
+        # Uniform: all edges have weight 1
+        similarities = np.ones_like(distances)
+        if pattern == 'auto':
+            similarities = similarities * (5.0 / np.median(similarities))
 
-    similarities = np.clip(similarities, None, max_similarity)  # 将所有值限制为不超过 max_similarity
+    elif weighting == 'ranked':
+        # Ranked: normalize by rank position (1/rank)
+        # distances from sklearn NearestNeighbors are already sorted
+        linear_weights = np.exp(
+            -1 * (np.arange(1, n_neighbors + 1) * 1.5 / n_neighbors) ** 2
+        )
 
+        similarities = np.tile(linear_weights, (distances.shape[0], 1))
+        if pattern == 'auto':
+            similarities = similarities * (5.0 / np.median(similarities))
 
+    elif weighting == 'connectivity':
+        # Connectivity: w = 1 - d/d_max
+        d_max = np.max(distances, axis=1, keepdims=True)  # Max distance per cell
+        similarities = 1 - distances / (d_max + 1e-10)
+        similarities = np.clip(similarities, 0, 1)  # Ensure [0, 1]
+        if pattern == 'auto':
+            similarities = similarities * (5.0 / np.median(similarities))
+
+    else:
+        raise ValueError(f"Unknown weighting scheme: {weighting}. "
+                        f"Options: 'reciprocal', 'gaussian', 'uniform', 'ranked', 'connectivity'")
 
     if results_report:
         # print('Maximum similarities: ', np.max(similarities))

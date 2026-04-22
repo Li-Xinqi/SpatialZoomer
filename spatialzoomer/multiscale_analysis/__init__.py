@@ -1,1 +1,3 @@
 from .Multiscale_analysis import MultiscaleAnalysis
+from .Physical_distance_mapping_v3 import mapping_scale_to_distance, run_physical_distance_pipeline
+from .NMF_harmony import NMF_harmony_correction
