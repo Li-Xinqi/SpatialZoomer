@@ -96,8 +96,10 @@ conda activate spatialzoomer
 conda install -c conda-forge pyarrow
 
 # Install SpatialZoomer
-pip install SpatialZoomer==0.1.1
+python -m pip install "setuptools<82" spatialzoomer==1.0.0
 ```
+We temporarily pin `setuptools<82` to avoid import issues caused by upstream dependencies that still expect `pkg_resources`, which was removed in Setuptools 82.
+
 The installation takes approximately 8.5 minutes. 
 
 ## Tutorials

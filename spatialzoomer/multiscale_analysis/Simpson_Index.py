@@ -78,7 +78,7 @@ def calculate_simpson_indices(spatial_knn, transcriptomic_knn, adata, cluster_co
 
 
 
-def plot_simpson_indices(adata, scales, clusters, save_path = None):
+def plot_simpson_indices(adata, scales, clusters, save_path = None, dpi=300):
     """
     Plot the mean Simpson indices to compare spatial and transcriptomic influences.
 
@@ -121,7 +121,7 @@ def plot_simpson_indices(adata, scales, clusters, save_path = None):
     plt.legend(loc='upper left')
     plt.tight_layout()
     if save_path:
-        plt.savefig(save_path + 'Average_Simpson_Indices_across_Scales.pdf', dpi=300)
+        plt.savefig(save_path + 'Average_Simpson_Indices_across_Scales.pdf', dpi=dpi)
     plt.show()
 
 
