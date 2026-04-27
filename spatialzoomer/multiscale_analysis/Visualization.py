@@ -35,7 +35,7 @@ def plot_clusters(ad, typical_scales, resolution, figsize = None, width_ratios =
     fig, axes = plt.subplots(
         len(typical_scales)+1, 2,
         figsize=figsize,
-        dpi=300,
+        dpi=100,
         gridspec_kw={'width_ratios': width_ratios}
     )
     
