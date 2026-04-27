@@ -22,7 +22,7 @@ def generate_colors(num_colors):
         new_colors = filter_similar_colors(colors, threshold=0.1)
     return new_colors[:num_colors]
 
-def plot_clusters(ad, typical_scales, resolution, figsize = None, width_ratios = None, pt_size_umap = 5, pt_size_scatter = 0.2):
+def plot_clusters(ad, typical_scales, resolution, figsize = None, width_ratios = None, pt_size_umap = 5, pt_size_scatter = 0.2, dpi=100):
     scales_plot = ['Raw'] + ['scale' + str(scale) for scale in typical_scales]
     new_colors = generate_colors(200)
 
@@ -35,7 +35,7 @@ def plot_clusters(ad, typical_scales, resolution, figsize = None, width_ratios =
     fig, axes = plt.subplots(
         len(typical_scales)+1, 2,
         figsize=figsize,
-        dpi=100,
+        dpi=dpi,
         gridspec_kw={'width_ratios': width_ratios}
     )
     
@@ -72,7 +72,7 @@ def plot_clusters(ad, typical_scales, resolution, figsize = None, width_ratios =
             frameon=False,
             size=pt_size_scatter,
             figsize=(18, 18),
-            dpi=100,
+            dpi=dpi,
             outline=False,
             img=False,
             marker='.',

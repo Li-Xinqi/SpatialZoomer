@@ -1,0 +1,14 @@
+,SpatialZoomer (scale and leiden resolution),BANKSY (lambda and leiden resolution),MENDER (leiden resolution),CellCharter (cluster number range),STAGATE (louvain resolution)
+cosmx_Lung12,leiden_scale6.0_res0.4;leiden_scale8.0_res0.4,labels_scaled_gaussian_pc20_nc0.20_r1.00,,cluster_cellcharter10-20,
+cosmx_Lung13,leiden_scale6.0_res0.4;leiden_scale8.0_res0.4,labels_scaled_gaussian_pc20_nc0.20_r0.50,,cluster_cellcharter10-20,
+cosmx_Lung5_Rep1,leiden_scale6.5_res0.4;leiden_scale8.5_res0.4,labels_scaled_gaussian_pc20_nc0.20_r0.70,,cluster_cellcharter10-20,
+cosmx_Lung5_Rep2,leiden_scale6.5_res0.4;leiden_scale8.5_res0.4,labels_scaled_gaussian_pc20_nc0.20_r0.20,,cluster_cellcharter10-20,
+cosmx_Lung5_Rep3,leiden_scale6.5_res0.4;leiden_scale8.5_res0.4,labels_scaled_gaussian_pc20_nc0.20_r0.20,,cluster_cellcharter10-20,
+cosmx_Lung6,leiden_scale6.0_res0.1,labels_scaled_gaussian_pc20_nc0.20_r0.20,,cluster_cellcharter10-20,
+cosmx_Lung9_Rep1,leiden_scale6.5_res0.4;leiden_scale8.5_res0.4,labels_scaled_gaussian_pc20_nc0.20_r0.20,,cluster_cellcharter10-20,
+cosmx_Lung9_Rep2,leiden_scale6.0_res0.4;leiden_scale8.0_res0.4,labels_scaled_gaussian_pc20_nc0.20_r0.50,,cluster_cellcharter10-20,
+cosmx_mousebrain,leiden_scale5.5_res0.6;leiden_scale7.5_res0.6;leiden_scale9.5_res0.4,labels_scaled_gaussian_pc20_nc0.20_r0.50,MENDER_leiden_res0.5,cluster_cellcharter10-20,louvain_0.5
+starmap_mousebrain_well05,leiden_scale5.5_res1.0;leiden_scale7.5_res1.0;leiden_scale9.5_res0.8,labels_scaled_gaussian_pc20_nc0.20_r0.50,MENDER_leiden_res0.5,cluster_cellcharter20-30,louvain_1.0
+starmap_mousebrain_well06,leiden_scale5.5_res2.0;leiden_scale7.5_res2.0;leiden_scale9.5_res2.0,labels_scaled_gaussian_pc20_nc0.20_r3.00,MENDER_leiden_res1.5,cluster_cellcharter30-40,louvain_3.0
+starmap_mousebrain_well11,leiden_scale6.5_res1.2;leiden_scale8.5_res1.2,labels_scaled_gaussian_pc20_nc0.20_r1.20,MENDER_leiden_res1.5,cluster_cellcharter20-30,louvain_1.5
+xenium_mousebrain,leiden_scale6.5_res1.2;leiden_scale8.5_res1.2,labels_scaled_gaussian_pc20_nc0.20_r1.20,MENDER_leiden_res1.5,cluster_cellcharter30-40,louvain_1.0

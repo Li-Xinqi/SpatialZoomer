@@ -150,7 +150,7 @@ def find_cluster_centers(corr_matrix, clusters):
 
 
 
-def Identify_Typical_Scales(transformed_signals, scales, min_clusters = 3, max_clusters = 10, figsize = (12, 6), save_path=None):
+def Identify_Typical_Scales(transformed_signals, scales, min_clusters = 3, max_clusters = 10, figsize = (12, 6), dpi = 300, save_path=None):
     """
     Identify the optimal number of frequency bands using dynamic programming and the elbow method 
     for clustering based on within-cluster variance.
@@ -207,7 +207,7 @@ def Identify_Typical_Scales(transformed_signals, scales, min_clusters = 3, max_c
     kneedle = KneeLocator(range(3, max_clusters + 1), variances, curve='convex', direction='decreasing',  S=1)
 
     # fig, axs = plt.subplots(1, 2, figsize=figsize)
-    plt.figure(figsize=figsize)
+    plt.figure(figsize=figsize, dpi=dpi)
     gs = gridspec.GridSpec(1, 2, width_ratios=[4, 6])
     ax1 = plt.subplot(gs[0])
     ax1.plot(range(3, max_clusters + 1), variances, marker='o')
@@ -235,7 +235,7 @@ def Identify_Typical_Scales(transformed_signals, scales, min_clusters = 3, max_c
 
     plt.tight_layout()
     if save_path:
-        plt.savefig(save_path + '/typical_scales.png', dpi=300)
+        plt.savefig(save_path + '/typical_scales.png', dpi=dpi)
         # plt.savefig(f'{save_path}_combined.pdf', dpi=300)
     plt.show()
 

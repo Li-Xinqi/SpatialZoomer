@@ -46,7 +46,7 @@ dependencies:
   - python=3.10
   - python-dateutil
   - pyzmq
-  - setuptools
+  - setuptools=81.0.0
   - six
   - sqlite
   - stack_data
@@ -149,7 +149,7 @@ dependencies:
       - slicerator==1.1.0
       - spatial-image==1.2.1
       - spatialdata==0.4.0
-      - spatialzoomer==0.1.0
+      - spatialzoomer==1.0.0
       - squidpy==1.6.5
       - statsmodels==0.14.5
       - threadpoolctl==3.6.0

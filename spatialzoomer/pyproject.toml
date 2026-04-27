@@ -1,10 +1,10 @@
 [project]
 name = "SpatialZoomer"
-version = "0.1.0"
+version = "1.0.0"
 description = "Multi-scale feature analysis of spatial transcriptomics"
 readme = "README.md"
 authors = [
-    {name = "Xinqi Li", email = "lxq19@mails.tsinghua.edu.cn"},
+    {name = "Xinqi Li", email = "lxq19@tsinghua.org.cn"},
     {name = "Yuhan Fan", email = "fyh22@mails.tsinghua.edu.cn"}
 ]
 license = {file = "LICENSE"}
@@ -20,6 +20,10 @@ dependencies = [
     "kneed",
     "pandas", 
     "scikit-learn", 
+    "pygsp",
+    "python-igraph",
+    "leidenalg",
+    "ipykernel"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -30,8 +34,10 @@ classifiers = [
 ]
 
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0,<82"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["spatialzoomer*"]
+namespaces = false

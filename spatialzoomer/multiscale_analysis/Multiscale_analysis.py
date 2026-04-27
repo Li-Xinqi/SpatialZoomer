@@ -93,7 +93,8 @@ class MultiscaleAnalysis:
             self.scales, 
             max_clusters=max_clusters, 
             min_clusters=min_clusters,
-            save_path = self.save_path
+            save_path = self.save_path,
+            dpi=self.dpi
             )
         
     def clustering(self, n_clusters_kmeans=10000, resolutions=None, min_scale=None, max_scale=None):
@@ -153,7 +154,8 @@ class MultiscaleAnalysis:
             self.adata, 
             scales_plot, 
             clusters_use, 
-            save_path = self.save_path)
+            save_path = self.save_path,
+            dpi=self.dpi)
         self.simpson_spatial_dict = simpson_spatial_dict
         self.simpson_expr_dict = simpson_expr_dict
         self.ratios_dict = ratios_dict
@@ -206,5 +208,6 @@ class MultiscaleAnalysis:
             figsize=figsize,
             width_ratios=width_ratios,
             pt_size_umap= pt_size_umap,
-            pt_size_scatter= pt_size_scatter
+            pt_size_scatter= pt_size_scatter,
+            dpi=self.dpi
             )
