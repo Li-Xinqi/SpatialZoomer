@@ -10,6 +10,10 @@ dependencies:
   - h5py
   - igraph
   - leidenalg
+  - jupyterlab
   - pip:
       - setuptools<82
       - spatialzoomer==1.0.0
+      - --extra-index-url https://download.pytorch.org/whl/cpu
+      - torch
+      - torchvision

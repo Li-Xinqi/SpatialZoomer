@@ -2,12 +2,19 @@
 
 The Python implementation of **SpatialZoomer**, a toolkit for **multi-scale spatial feature analysis** of single-cell resolved spatial transcriptomics via spectral graph signal processing. It scales to millions of cells with high computational efficiency and low hardware requirements.
 
+Explore SpatialZoomer's multi-scale results by sliding the scale axis across four datasets on our interactive demo site:
+
+👉 [**Demo Website**](https://li-xinqi.github.io/SpatialZoomer/)
+
+
+## Contents
+
 1. [Introduction](#introduction)
-2. [Demos](#demos)
-3. [System Requirements](#system-requirements)
-4. [Cloning Tip](#cloning-tip)
-5. [Installation](#installation)
-6. [Tutorials](#tutorials)
+2. [System Requirements](#system-requirements)
+3. [Cloning Tip](#cloning-tip)
+4. [Installation](#installation)
+5. [Tutorials](#tutorials)
+6. [Result Reproduction](#result-reproduction)
 7. [Cite](#cite)
 
 
@@ -35,13 +42,6 @@ SpatialZoomer is a novel computational method that enables the multi-scale featu
 - Fast runtime, even for large-scale datasets.
 - Scalable to >1 million cells on desktops.
 
-## Demos
-Explore SpatialZoomer's multi-scale results by sliding the scale axis across four datasets on our interactive demo site:
-
-
-👉 [**Demo Website**](https://li-xinqi.github.io/SpatialZoomer/)
-
-
 ## System Requirements
 SpatialZoomer requires only a standard computer with sufficient RAM for in-memory operations and runs without the need for a GPU. It is lightweight and can be executed on **laptops, desktops, or servers**.
 
@@ -66,6 +66,8 @@ SpatialZoomer requires only a standard computer with sufficient RAM for in-memor
   <em>Runtime and memory profiling of SpatialZoomer across nine datasets and four devices</em>
 </p>
 
+The overall time complexity of SpatialZoomer is approximately `O(nlogn + nm)`, and the space complexity is approximately `O(nm)`, where `n` and `m` denote the number of cells and genes, respectively. For a step-by-step time and space complexity analysis, see [Computational_complexity_analysis.pdf](./Computational_complexity_analysis.pdf).
+
 ## Cloning Tip
 
 To speed up the cloning process by downloading only the `main` branch, you can either:
@@ -76,7 +78,7 @@ To speed up the cloning process by downloading only the `main` branch, you can e
 git clone --single-branch --branch main https://github.com/Li-Xinqi/SpatialZoomer.git
 ```
 ## Installation
-Requires **Python ≥ 3.9**
+Requires **Python ≥ 3.10**
 
 ### Option 1: Recommended (using environment.yml)
 ```bash
@@ -85,6 +87,8 @@ conda env create -f environment.yml
 conda activate spatialzoomer
 ```
 The installation takes approximately 7 minutes. 
+
+For users working on computing clusters or requiring PyTorch and Jupyter Notebook, we also provide [environment_cluster.yml](./environment_cluster.yml). SpatialZoomer itself does not depend on PyTorch.
 
 ### Option 2: Manual installation
 ```bash
@@ -103,13 +107,19 @@ We temporarily pin `setuptools<82` to avoid import issues caused by upstream dep
 The installation takes approximately 8.5 minutes. 
 
 ## Tutorials
-We provide Jupyter notebook tutorials that guide you through the key functionalities of SpatialZoomer.
+We provide Jupyter notebook tutorials that guide users through the key functionalities of SpatialZoomer. Each tutorial includes links to download example datasets and step-by-step instructions to reproduce the analyses.
 
-Each tutorial includes links to download example datasets and step-by-step instructions to reproduce the analyses.
+### Data downloads
+All datasets required for the tutorials are available on [Google Cloud](https://drive.google.com/drive/folders/1MhL9rV6y0_SvJfjgf_nqXpZ7YqerB5Bj?usp=drive_link)
+Each tutorial also provides a direct download link for its corresponding dataset.
+
 
 ### Tutorial 1: Multi-Scale Analysis (`.ipynb`)
 
-Automatically selects multiple critical scales from single-cell resolved spatial transcriptomics data and identifies spatial structures at each scale.
+Automatically selects multiple critical scales from single-cell resolved spatial transcriptomics data, identifies spatial structures at each scale.
+
+It also provides a **scale-to-distance mapping module** to quantitatively estimate the effective physical range of each scale parameter for the analyzed sample, using micrometers as the default unit.
+
 
 📘 [Multi-scale analysis: Vizgen MERFISH Mouse Brain](./examples/Tutorial1_MERFISH_Mouse_Brain_Multi-scale_Analysis.ipynb)
 
@@ -126,9 +136,46 @@ As the spatial scale increases, cells progressively incorporate broader context 
 
 📘 [Identification of spatially dependent clusters: Xenium Prime Ovarian Cancer](./examples/Tutorial2_Xenium_Prime_Ovarian_Cancer_Subcluster.ipynb)
 
-### Data downloads
-All datasets required for the tutorials are available on [Google Cloud](https://drive.google.com/drive/folders/1MhL9rV6y0_SvJfjgf_nqXpZ7YqerB5Bj?usp=drive_link)
-Each tutorial also provides a direct download link for its corresponding dataset.
+### Tutorial 3: Integration with Existing Python and R Workflows
+
+SpatialZoomer serves as a specialized module for unsupervised multi-scale feature extraction and spatial structure identification in spatial omics workflows. Built in Python and based on the AnnData (`.h5ad`) format, it is compatible with Python ecosystems such as Scanpy and Squidpy, and can also be integrated with R-based workflows such as GiottoSuite and Seurat through standard data conversion.
+
+<p align="center">
+  <img src="./Figures/SpatialZoomer_in_pipeline.jpg" alt="SpatialZoomer in spatial omics analysis pipelines" width="80%"><br>
+  <em>Integration of SpatialZoomer into upstream and downstream spatial omics analysis workflows</em>
+</p>
+
+- Upstream preprocessing: accepts inputs from existing tools or pipelines after cell segmentation, quality control, and optional cell type annotation.
+
+- Downstream analyses: provides outputs for further analysis using other tools or pipelines, such as differential expression, pathway enrichment, and cell-cell interaction analysis.
+
+📘 [Tutorial for upstream processing with GiottoSuite](./examples/Tutorial2_Xenium_Lung_Cancer_Subcluster.ipynb)
+
+
+## Result Reproduction
+
+Code for reproducing the results is provided in the `./examples` and `./reproduction` folders. The required datasets can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1MhL9rV6y0_SvJfjgf_nqXpZ7YqerB5Bj?usp=drive_link) or from the original data sources listed in the corresponding code files.
+
+### Case 1
+
+SpatialZoomer identified two spatially dependent macrophage subclusters in lung cancer. Intermediate results are provided, so the two notebooks can be run independently.
+
+1. [Multi-scale analysis: Xenium v1 Lung Cancer](./examples/Tutorial1_Xenium_Lung_Cancer_Multi-scale_Analysis.ipynb)
+2. [Identification of spatially dependent clusters: Xenium v1 Lung Cancer](./examples/Tutorial2_Xenium_Lung_Cancer_Subcluster.ipynb)
+
+### Case 2
+
+SpatialZoomer identified two spatially dependent CAF subclusters in ovarian cancer. Intermediate results are provided, so the two notebooks can be run independently.
+
+1. [Multi-scale analysis: Xenium Prime Ovarian Cancer](./examples/Tutorial1_Xenium_Prime_Ovarian_Cancer_Multi-scale_Analysis.ipynb)
+2. [Identification of spatially dependent clusters: Xenium Prime Ovarian Cancer](./examples/Tutorial2_Xenium_Prime_Ovarian_Cancer_Subcluster.ipynb)
+
+### Benchmarking
+
+Benchmarking was performed using BANKSY, CellCharter, MCIST, MENDER, and STAGATE. The benchmarking code is provided in [`./reproduction/Benchmark/codes`](./reproduction/Benchmark/codes).
+
+Default or author-recommended parameter settings from the official implementations or publications were used for all methods. The number of clusters was kept as consistent as possible across methods. Detailed parameters and final clustering results are provided in the `.csv` files under [`./reproduction/Benchmark`](./reproduction/Benchmark).
+
 
 ## Cite
 Xinqi Li#, Yuhan Fan#, Yue Han, Wenbo Guo, Jingmin Huang, Nan Yan, Zeyu Chen, Yanhong Wu, Yuxin Miao, Lin Hou, Xuegong Zhang, Zeyu Chen, Jin Gu*. SpatialZoomer: multi-scale feature analysis of spatial transcriptomics. bioRxiv (2025).

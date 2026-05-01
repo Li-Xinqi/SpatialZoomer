@@ -1,0 +1,7 @@
+,MCIST-STAGATE (cluster number),MCIST-GraphST (cluster number),MCIST-SpaceFlow  (cluster number),SpatialZoomer (scale and leiden resolution)
+MERFISH_0.04_20240319045554,MCIST_spatial_domains_10,MCIST_spatial_domains_10,MCIST_spatial_domains_10,leiden_scale3.5_res0.2;leiden_scale4.5_res0.2;leiden_scale6.0_res0.15
+MERFISH_0.09_20240319045428,MCIST_spatial_domains_10,MCIST_spatial_domains_10,MCIST_spatial_domains_10,leiden_scale4.0_res0.3;leiden_scale5.5_res0.2;leiden_scale7.5_res0.15
+MERFISH_0.14_20240319045431,MCIST_spatial_domains_10,MCIST_spatial_domains_10,MCIST_spatial_domains_10,leiden_scale3.5_res0.3;leiden_scale5.0_res0.3;leiden_scale7.0_res0.15
+MERFISH_0.19_20240319045434,MCIST_spatial_domains_10,MCIST_spatial_domains_10,MCIST_spatial_domains_10,leiden_scale3.5_res0.4;leiden_scale4.5_res0.3;leiden_scale6.0_res0.15
+MERFISH_0.24_20240319045320,MCIST_spatial_domains_10,MCIST_spatial_domains_10,MCIST_spatial_domains_10,leiden_scale3.5_res0.4;leiden_scale4.5_res0.2;leiden_scale6.0_res0.15
+STARmap_20180505_BY3_1k,MCIST_spatial_domains_10,MCIST_spatial_domains_10,MCIST_spatial_domains_10,leiden_scale3.5_res0.4;leiden_scale5.0_res0.3;leiden_scale7.0_res0.2
