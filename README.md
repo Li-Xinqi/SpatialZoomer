@@ -149,26 +149,47 @@ SpatialZoomer serves as a specialized module for unsupervised multi-scale featur
 
 - Downstream analyses: provides outputs for further analysis using other tools or pipelines, such as differential expression, pathway enrichment, and cell-cell interaction analysis.
 
-📘 [Tutorial for upstream processing with GiottoSuite](./examples/Tutorial2_Xenium_Lung_Cancer_Subcluster.ipynb)
+📘 [Tutorial for upstream processing with GiottoSuite using Xenium v1 Lung Cancer as an example](./examples/Tutorial3_Xenium_Lung_Cancer_GiottoSuite_Integration.ipynb)
 
+📘 [Tutorial for downstream analysis with Scanpy/Squidpy using Xenium v1 AD dataset as an example](./reproduction/Figure2_AD_progression/3_Downstream_Analysis_Xenium_V1_AD_Merged.ipynb)
+
+
+### Additional Features
+
+1. SpatialZoomer supports user-defined low-dimensional representations, such as PCA, scVI, or other omics-derived embeddings. Users can store these representations in `adata.obsm` and specify them using `use_rep`, for example:
+
+   ```python
+   sz_analyzer.multiscale_transform(use_rep="X_new", n_neighbors=20, scales=scales)
+   ```
+
+2. For multi-sample analysis, SpatialZoomer provides an optional Harmony-based batch correction function for NMF embeddings during preprocessing: `sz.NMF_harmony_correction`.
 
 ## Result Reproduction
 
 Code for reproducing the results is provided in the `./examples` and `./reproduction` folders. The required datasets can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1MhL9rV6y0_SvJfjgf_nqXpZ7YqerB5Bj?usp=drive_link) or from the original data sources listed in the corresponding code files.
 
-### Case 1
+### Figure 2
+
+SpatialZoomer reveals the Alzheimer’s disease progression signal at specific scales. The reproduction workflow includes three steps: data preparation, multi-scale analysis using SpatialZoomer, and downstream analysis. The first step requires raw data from the official source, while the second and third steps can be run with the processed data we provide on Google Drive. See the corresponding notebooks for details.
+
+1. [Data preparation: Xenium v1 AD dataset](./reproduction/Figure2_AD_progression/1_Data_preparation_Xenium_V1_AD_Merged.ipynb)
+2. [Multi-scale analysis: Xenium v1 AD dataset](./reproduction/Figure2_AD_progression/2_Multi-scale_Analysis_Xenium_V1_AD_Merged.ipynb)
+1. [Downstream analysis: Xenium v1 AD dataset](./reproduction/Figure2_AD_progression/3_Downstream_Analysis_Xenium_V1_AD_Merged.ipynb)
+
+### Figure 3
 
 SpatialZoomer identified two spatially dependent macrophage subclusters in lung cancer. Intermediate results are provided, so the two notebooks can be run independently.
 
 1. [Multi-scale analysis: Xenium v1 Lung Cancer](./examples/Tutorial1_Xenium_Lung_Cancer_Multi-scale_Analysis.ipynb)
 2. [Identification of spatially dependent clusters: Xenium v1 Lung Cancer](./examples/Tutorial2_Xenium_Lung_Cancer_Subcluster.ipynb)
 
-### Case 2
+### Figure 4
 
 SpatialZoomer identified two spatially dependent CAF subclusters in ovarian cancer. Intermediate results are provided, so the two notebooks can be run independently.
 
 1. [Multi-scale analysis: Xenium Prime Ovarian Cancer](./examples/Tutorial1_Xenium_Prime_Ovarian_Cancer_Multi-scale_Analysis.ipynb)
 2. [Identification of spatially dependent clusters: Xenium Prime Ovarian Cancer](./examples/Tutorial2_Xenium_Prime_Ovarian_Cancer_Subcluster.ipynb)
+
 
 ### Benchmarking
 
