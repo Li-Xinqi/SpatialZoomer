@@ -169,7 +169,8 @@ def Clustering_raw_signal(adata,
                           resolutions = [0.4, 0.6, 0.8, 1, 1.2], 
                           scale_data = True, 
                           figsize = (22, 5.5),
-                          title = 'Raw', save_path = '', runLabel = ''):
+                          title = 'Raw', save_path = '', runLabel = '',
+                          save_intermediate=True):
     """
     Perform clustering on the raw signal after NMF transformation
     """
@@ -185,7 +186,8 @@ def Clustering_raw_signal(adata,
         data = adata.obsm[use_rep].copy()
 
     adata, adata_kmeans =  TwoStepClustering(adata, data, n_clusters_kmeans = n_clusters_kmeans, scale_data = scale_data, resolution = resolutions, title = title)
-    adata_kmeans.write(save_path + '/' + runLabel +'_object_kmeans_'+title+'.h5ad')
+    if save_intermediate:
+        adata_kmeans.write(save_path + '/' + runLabel +'_object_kmeans_'+title+'.h5ad')
 
     # for res in resolutions:
     #     path  =  save_path +'/Clustering_signal_'+str(title) + '_res'+ str(res)+'.png'
@@ -199,7 +201,8 @@ def Clustering_raw_signal(adata,
 
 
 def Clustering_transformed_signal(adata, transformed_signals, typical_scales_df, n_clusters_kmeans = 10000, 
-                                  resolutions = [0.4, 0.6, 0.8, 1, 1.2], scale_data = True, figsize = (22, 11), save_path = '', runLabel = ''):
+                                  resolutions = [0.4, 0.6, 0.8, 1, 1.2], scale_data = True, figsize = (22, 11), 
+                                  save_path = '', runLabel = '', save_intermediate=True):
     """
     Perform clustering on the transformed signal after GWT transformation
     """
@@ -214,7 +217,8 @@ def Clustering_transformed_signal(adata, transformed_signals, typical_scales_df,
         title = 'scale'+str(scale)
 
         adata, adata_kmeans =  TwoStepClustering(adata, data, n_clusters_kmeans = n_clusters_kmeans, scale_data = scale_data,  resolution = resolutions, title = title)
-        adata_kmeans.write(save_path + '/' + runLabel +'_object_kmeans_'+title+'.h5ad')
+        if save_intermediate:
+            adata_kmeans.write(save_path + '/' + runLabel +'_object_kmeans_'+title+'.h5ad')
 
         # for res in resolutions:
         #     path  =  save_path +'/Clustering_signal_'+str(title) + '_res'+ str(res)+'.png'

@@ -12,4 +12,4 @@ dependencies:
   - leidenalg
   - pip:
       - setuptools<82
-      - spatialzoomer==1.0.0
+      - spatialzoomer==1.2.0

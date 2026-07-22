@@ -473,6 +473,7 @@ class SubclusterAnalysis:
 
         env_component_adata_selected = env_component_adata[self.adata_selected_plot.obs_names]
         env_component_adata_selected.obs = self.adata_selected_plot.obs.copy()
+        env_component_adata_selected.uns['cluster_label_colors'] = self.adata_selected_plot.uns['cluster_label_colors'].copy()
 
         var_show = env_component_adata_selected.var_names
         low_cnt_cluster = env_component_adata_selected.var_names[env_component_adata_selected.X.mean(axis=0) < 0.01]

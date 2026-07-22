@@ -14,10 +14,12 @@ import squidpy as sq
 import os
 
 class MultiscaleAnalysis:
-    def __init__(self, adata, runLabel, save_path):
+    def __init__(self, adata, runLabel, save_path, save_intermediate = True):
         self.adata = adata
         self.runLabel = runLabel
         self.save_path = save_path
+        self.save_intermediate = save_intermediate
+
         # if not exist
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
@@ -56,7 +58,7 @@ class MultiscaleAnalysis:
         mpl.rcParams['pdf.fonttype'] = 42
         mpl.rcParams['ps.fonttype'] = 42        
 
-    def multiscale_transform(self, use_rep='X_nmf', scales=None, n_neighbors=10):
+    def multiscale_transform(self, use_rep='X_nmf', scales=None, n_neighbors=10, metric = 'euclidean', weighting='reciprocal', pattern='auto'):
         self.n_neighbors = n_neighbors
         if scales is None:
             self.scales = [0.01] + np.arange(0.1, 2.1, 0.1).tolist() + np.arange(2.5, 15.5, 0.5).tolist() + np.arange(16, 21, 1).tolist() +  np.arange(25, 55, 5).tolist()
@@ -73,8 +75,10 @@ class MultiscaleAnalysis:
             self.adata, 
             use_rep = 'spatial', 
             name = 'spatial_knn', 
+            metric = metric, 
             n_neighbors = n_neighbors, 
-            pattern='auto')
+            weighting=weighting,
+            pattern = pattern)
 
         self.transformed_signals, self.scales = performSGFB(
             self.adata, 
@@ -82,7 +86,8 @@ class MultiscaleAnalysis:
             use_rep = use_rep, 
             scales = self.scales, 
             runLabel = self.runLabel, 
-            save_path = self.save_path)
+            save_path = self.save_path,
+            save_intermediate=self.save_intermediate)
 
     def identify_typical_scales(self, max_clusters=10, min_clusters=3):
         if self.transformed_signals is None:
@@ -115,7 +120,9 @@ class MultiscaleAnalysis:
             resolutions = resolutions, 
             title = 'Raw', 
             save_path = self.save_path, 
-            runLabel = self.runLabel)
+            runLabel = self.runLabel,
+            save_intermediate=self.save_intermediate
+            )
         
         scales_df_use = self.typical_scales_df.copy()
         if min_scale is not None:
@@ -130,7 +137,8 @@ class MultiscaleAnalysis:
             n_clusters_kmeans = n_clusters_kmeans, 
             resolutions = resolutions, 
             save_path = self.save_path, 
-            runLabel = self.runLabel
+            runLabel = self.runLabel,
+            save_intermediate=self.save_intermediate
             )
         self.scales_df_use = scales_df_use
         self.clustered = True
@@ -196,11 +204,17 @@ class MultiscaleAnalysis:
                 )
         self.plot_simpson()
 
-    def plot_multiscale_clusters(self, resolution=0.4, pt_size_umap = 5, pt_size_scatter = 0.2, figsize = None, width_ratios=None):
+    def plot_multiscale_clusters(self, resolution=0.4, pt_size_umap = 5, pt_size_scatter = 0.2, min_scale=None, max_scale=None,figsize = None, width_ratios=None):
         if self.clustered is False:
             raise ValueError("Clustering has not been performed. Please run `clustering` first.")
         
-        typical_scales = self.scales_df_use['Scale'].values
+        scales_df_use = self.scales_df_use.copy()
+        if min_scale is not None:
+            scales_df_use = scales_df_use[scales_df_use['Scale'] >= min_scale]
+        if max_scale is not None:
+            scales_df_use = scales_df_use[scales_df_use['Scale'] <= max_scale]
+
+        typical_scales = scales_df_use['Scale'].values
         plot_clusters(
             self.adata, 
             typical_scales, 

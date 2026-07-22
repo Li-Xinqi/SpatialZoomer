@@ -204,13 +204,13 @@ def Identify_Typical_Scales(transformed_signals, scales, min_clusters = 3, max_c
         variances.append(total_variance)
     
     # Step 3: Detect the elbow point
-    kneedle = KneeLocator(range(3, max_clusters + 1), variances, curve='convex', direction='decreasing',  S=1)
+    kneedle = KneeLocator(range(min_clusters, max_clusters + 1), variances, curve='convex', direction='decreasing',  S=1)
 
     # fig, axs = plt.subplots(1, 2, figsize=figsize)
     plt.figure(figsize=figsize, dpi=dpi)
     gs = gridspec.GridSpec(1, 2, width_ratios=[4, 6])
     ax1 = plt.subplot(gs[0])
-    ax1.plot(range(3, max_clusters + 1), variances, marker='o')
+    ax1.plot(range(min_clusters, max_clusters + 1), variances, marker='o')
     ax1.set_xlabel('Number of Clusters')
     ax1.set_ylabel('Total Within-Cluster Variance')
     ax1.set_title('Elbow Method for Optimal Number of Clusters')
@@ -235,8 +235,8 @@ def Identify_Typical_Scales(transformed_signals, scales, min_clusters = 3, max_c
 
     plt.tight_layout()
     if save_path:
-        plt.savefig(save_path + '/typical_scales.png', dpi=dpi)
-        # plt.savefig(f'{save_path}_combined.pdf', dpi=300)
+        plt.savefig(save_path + '/Typical_scales.pdf', dpi=dpi)
+        # plt.savefig(save_path + '/Typical_scales.png', dpi=dpi)
     plt.show()
 
     print(f"The optimal number of clusters is: {optimal_k}")
@@ -257,7 +257,7 @@ def Identify_Typical_Scales(transformed_signals, scales, min_clusters = 3, max_c
     'Scale': typical_scales
     })
     if save_path:
-        typical_scales_df.to_csv(f'{save_path}_typical_scales.csv', index=False)
+        typical_scales_df.to_csv(f'{save_path}/Typical_scales.csv', index=False)
     
     end_time = time.time()
     elapsed_time = end_time - start_time

@@ -326,7 +326,7 @@ def check_graph(G_pygsp):
 
 
 
-def performSGFB(adata, use_knn = 'spatial_knn', use_rep = 'X_nmf', scales = None, runLabel = 'Xenium', save_path = '/'):
+def performSGFB(adata, use_knn = 'spatial_knn', use_rep = 'X_nmf', scales = None, runLabel = 'Xenium', save_path = '/', save_intermediate=True):
     """
     Perform Spectral Graph Filter Bank (SGFB) on the signals (like expressions) and save the transformed signals.
 
@@ -399,9 +399,10 @@ def performSGFB(adata, use_knn = 'spatial_knn', use_rep = 'X_nmf', scales = None
         data = adata.obsm[use_rep].copy()
 
     transformed_signals = SGFB(G_pygsp, data = data, scales= scales, time_report = True)
-
-    with h5py.File(save_path +'/'+ runLabel +'_transformed_signals.h5', 'w') as f:
-        f.create_dataset('transformed_signals', data=transformed_signals)
-    print(f"Transformed signals saved to {save_path +'/'+ runLabel +'_transformed_signals.h5'}")
+    
+    if save_intermediate:
+        with h5py.File(save_path +'/'+ runLabel +'_transformed_signals.h5', 'w') as f:
+            f.create_dataset('transformed_signals', data=transformed_signals)
+        print(f"Transformed signals saved to {save_path +'/'+ runLabel +'_transformed_signals.h5'}")
 
     return transformed_signals, scales

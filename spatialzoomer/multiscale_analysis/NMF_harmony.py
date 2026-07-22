@@ -1,134 +1,164 @@
-import warnings
-warnings.filterwarnings("ignore")
-
-import numpy as np
 import scanpy as sc
-import scanpy.external as sce
+import numpy as np
 from scipy.sparse import issparse
-
 
 def NMF_harmony_correction(
     adata,
     harmony_vars="batch",
     librarysize_targetsum=1e4,
     quantile_thresh=0.9999,
+    max_value=None,
     theta=1,
     max_iter_harmony=20,
     nonneg_strategy="shift",
-    n_pcs=50,
-    random_state=0,
+    store_key_pca_harmony="X_pca_harmony"
 ):
     """
-    Apply Harmony-based batch correction to adata.X.
-
-    Input adata.X should contain raw counts. The function:
-      1. Normalizes to librarysize_targetsum
-      2. Clips at quantile_thresh to reduce outliers
-      3. Log1p transforms
-      4. Scales (zero-centers) for PCA
-      5. Runs PCA
-      6. Runs Harmony on PCA embeddings
-      7. Reconstructs corrected expression by inverse PCA (undo scaling + undo log1p)
-      8. Applies nonneg_strategy to ensure non-negative values
-      9. Returns adata copy with corrected X in normalized (non-log) space
-
-    After this function returns, you may apply sc.pp.normalize_total and
-    sc.pp.log1p before running NMF.
+    Run Harmony on PCA, then apply Harmony's MoE ridge correction to expression matrix X,
+    and optionally clip negative values to 0. Return corrected AnnData copy.
 
     Parameters
     ----------
     adata : AnnData
-        Input AnnData with raw counts in adata.X.
-    harmony_vars : str or list of str
-        Column name(s) in adata.obs to use for Harmony batch correction.
+        Input AnnData.
+    harmony_vars : str or list[str]
+        Column(s) in adata.obs used as Harmony batch covariates (e.g., 'batch').
     librarysize_targetsum : float
-        Target total counts per cell for normalization before Harmony.
-    quantile_thresh : float
-        Quantile threshold (among non-zero values) for clipping extreme values
-        after normalization. Set to 1.0 to disable clipping.
+        Target sum for library size normalization.
+    quantile_thresh : float or None
+        Quantile ceiling threshold (e.g. 0.9999). If None, no ceiling.
+    max_value : float or None
+        Passed to sc.pp.scale(max_value=...). Usually None if you use quantile ceiling.
     theta : float
-        Harmony diversity clustering penalty parameter.
+        Harmony diversity clustering penalty.
     max_iter_harmony : int
-        Maximum number of Harmony iterations.
+        Harmony max iterations.
     nonneg_strategy : str
-        Strategy to ensure non-negative values after inverse PCA reconstruction.
-        "shift" : shift by the global minimum so all values >= 0.
-        "clip"  : clip values below 0 to 0.
-    n_pcs : int
-        Number of principal components for PCA + Harmony.
-    random_state : int
-        Random seed for PCA.
+        Strategy to handle negative values after correction:
+        - "clip": set negative values to 0.
+        - "shift": shift all values by adding a small constant to make min value slightly > 0.
+        - "none" or "keep": do not modify negative values.
+    store_key_pca_harmony : str
+        Key to store Harmony-corrected PCA embedding in .obsm.
 
     Returns
     -------
-    adata2 : AnnData
-        Copy of input AnnData with batch-corrected expression in adata.X
-        (normalized, non-log space, non-negative).
+    _adata : AnnData
+        Corrected copy of input adata.
     """
-    adata2 = adata.copy()
+    try:
+        import harmonypy
+    except ImportError as exc:
+        raise ImportError(
+            "NMF_harmony_correction requires the optional dependency "
+            "'harmonypy'. Please install it with:\n"
+            "    pip install harmonypy"
+        ) from exc
+    
+    def stdscale_quantile_celing(_adata, max_value=None, quantile_thresh=None):
+        sc.pp.scale(_adata, zero_center=False, max_value=max_value)
+        if quantile_thresh is not None:
+            X = _adata.X
+            if issparse(X):
+                threshval = np.quantile(np.array(X.todense()).reshape(-1), quantile_thresh)
+            else:
+                threshval = np.quantile(X.reshape(-1), quantile_thresh)
+            _adata.X[_adata.X > threshval] = threshval
 
-    # 1. Normalize by library size
-    sc.pp.normalize_total(adata2, target_sum=librarysize_targetsum)
+    def moe_correct_ridge(Z_orig, R, K, Phi_moe, lamb):
+        """
+        Z_orig: (features, cells)  (i.e., X.T)
+        Harmony objects:
+          R: (n_clusters, cells) or (cells, n_clusters) depending on harmonypy version.
+          Phi_moe: design matrix used in Harmony (dimensions depend on harmonypy).
+        This function matches your current implementation (transpose choices).
+        """
+        Z_corr = Z_orig.copy()
+        W = None
+        Phi_Rk = None
+        x = None
 
-    # 2. Clip extreme values at the given quantile (computed over non-zero entries)
-    if issparse(adata2.X):
-        X_dense = adata2.X.toarray().astype(np.float64)
-    else:
-        X_dense = np.asarray(adata2.X, dtype=np.float64)
+        for i in range(K):
+            Phi_Rk = np.multiply(Phi_moe.T, R[:, i])
+            x = np.dot(Phi_Rk, Phi_moe) + lamb
+            W = np.dot(np.dot(np.linalg.inv(x), Phi_Rk), Z_orig.T)
+            W[0, :] = 0  # do not remove the intercept
+            Z_corr -= np.dot(W.T, Phi_Rk)
 
-    non_zero_vals = X_dense[X_dense > 0]
-    if non_zero_vals.size > 0:
-        q_thresh = np.quantile(non_zero_vals, quantile_thresh)
-    else:
-        q_thresh = np.quantile(X_dense, quantile_thresh)
-    X_dense = np.clip(X_dense, None, q_thresh)
-    adata2.X = X_dense
+        Z_cos = Z_corr / np.linalg.norm(Z_corr, ord=2, axis=0)
+        return Z_cos, Z_corr, W, Phi_Rk
+    
+    np.random.seed(14)
+    _adata = adata.copy()
 
-    # 3. Log1p transform
-    sc.pp.log1p(adata2)
+    # 1) normalization for PCA input
+    anorm = _adata.copy()
+    sc.pp.normalize_total(anorm, target_sum=librarysize_targetsum)
+    stdscale_quantile_celing(anorm, max_value=max_value, quantile_thresh=quantile_thresh)
 
-    # 4. Scale for PCA (zero-center; stores mean and std in adata.var)
-    sc.pp.scale(adata2, zero_center=True)
+    # also apply same scaling+ceiling to _adata.X (as in your code)
+    stdscale_quantile_celing(_adata, max_value=max_value, quantile_thresh=quantile_thresh)
 
-    # 5. PCA
-    n_pcs_actual = min(n_pcs, min(adata2.n_obs, adata2.n_vars) - 1)
-    sc.tl.pca(adata2, n_comps=n_pcs_actual, random_state=random_state)
+    # 2) PCA on normalized data, then put into _adata
+    sc.pp.pca(anorm,  zero_center=True)
+    _adata.obsm["X_pca"] = anorm.obsm["X_pca"].copy()
+    del anorm
 
-    # 6. Harmony batch correction on PCA embeddings
-    sce.pp.harmony_integrate(
-        adata2,
-        key=harmony_vars,
-        theta=theta,
+    # 3) Harmony on PCA
+    harmony_res = harmonypy.run_harmony(
+        _adata.obsm["X_pca"],
+        _adata.obs,
+        harmony_vars,
         max_iter_harmony=max_iter_harmony,
-        random_state=random_state,
+        theta=theta,
+        verbose=False
     )
 
-    # 7. Reconstruct corrected expression in scaled space via inverse PCA
-    # adata2.varm["PCs"]: (n_genes, n_pcs) - PCA loadings
-    # adata2.obsm["X_pca_harmony"]: (n_cells, n_pcs) - Harmony-corrected scores
-    loadings = adata2.varm["PCs"]               # (n_genes, n_pcs)
-    W_harmony = adata2.obsm["X_pca_harmony"]    # (n_cells, n_pcs)
-    X_scaled_corr = W_harmony @ loadings.T       # (n_cells, n_genes)
+    X_pca_harmony = harmony_res.Z_corr.copy()
 
-    # 8. Undo scaling: X_log_corr = X_scaled_corr * std + mean
-    mean = adata2.var["mean"].values             # (n_genes,)
-    std = adata2.var["std"].values               # (n_genes,)
-    std = np.where(std == 0, 1.0, std)           # avoid division by zero
-    X_log_corr = X_scaled_corr * std + mean      # (n_cells, n_genes)
-
-    # 9. Undo log1p: back to normalized (non-log) space
-    X_norm_corr = np.expm1(X_log_corr)           # (n_cells, n_genes)
-
-    # 10. Apply non-negative strategy
-    if nonneg_strategy == "shift":
-        min_val = X_norm_corr.min()
-        if min_val < 0:
-            X_norm_corr -= min_val
-    elif nonneg_strategy == "clip":
-        X_norm_corr = np.clip(X_norm_corr, 0, None)
+    # 4) Apply MoE ridge correction to expression matrix
+    X = _adata.X
+    if issparse(X):
+        XX = X.todense()
     else:
-        raise ValueError(f"Unknown nonneg_strategy: '{nonneg_strategy}'. Use 'shift' or 'clip'.")
+        XX = np.asarray(X)
 
-    adata2.X = X_norm_corr.astype(np.float32)
+    _, X_corr, _, _ = moe_correct_ridge(
+        XX.T,
+        harmony_res.R,
+        harmony_res.K,
+        harmony_res.Phi_moe,
+        harmony_res.lamb,
+    )
+    X_corr = np.asarray(X_corr.T)
 
-    return adata2
+    if nonneg_strategy  == "clip":
+        X_corr[X_corr < 0] = 0
+
+    elif nonneg_strategy == "shift":
+        qval = np.quantile(X_corr, 0.00001)
+        if qval < 0:
+            X_corr = X_corr - qval
+        X_corr[X_corr < 0] = 0
+    elif nonneg_strategy in ["none", "keep"]:
+        pass
+    else:
+        raise ValueError(
+            f"Unknown nonneg_strategy: {nonneg_strategy}. "
+            "Choose from ['clip', 'shift', 'none']."
+        )
+
+    _adata.X = X_corr.copy()
+    _adata.obsm[store_key_pca_harmony] = X_pca_harmony.copy()
+
+    return _adata
+
+
+# adata_corr = NMF_harmony_correction(
+#     adata,
+#     harmony_vars="batch",
+#     librarysize_targetsum=1e4,
+#     quantile_thresh=0.9999,
+#     theta=1,
+#     max_iter_harmony=20
+# )
