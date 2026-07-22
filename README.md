@@ -146,7 +146,7 @@ As the spatial scale increases, cells progressively incorporate broader context 
 
 📘 [Identification of spatially dependent clusters: Xenium Prime Ovarian Cancer](./examples/Tutorial2_Xenium_Prime_Ovarian_Cancer_Subcluster.ipynb)
 
-### Additional Features
+### Tutorial 3: Additional Features (`.ipynb`)
 
 #### ✨ 1. Integration with Existing Python and R Workflows
 
